@@ -431,23 +431,142 @@ end
 local ac, ic = 0xFF00FFEE, 0xFF888888
 local dens = activity.getResources().getDisplayMetrics().density
 
-local function rTabs()
-  if page_1 then page_1.setVisibility(8) end
-  if page_2 then page_2.setVisibility(8) end
-  if page_3 then page_3.setVisibility(8) end
-  if page_4 then page_4.setVisibility(8) end
+-- =========================================================
+-- TAB INDICATOR
+-- 125dp = bawat tab
+-- 85dp  = cyan line
+-- 20dp  = automatic side spacing
+-- =========================================================
 
-  if txt_tab1 then txt_tab1.setTextColor(ic) end
-  if txt_tab2 then txt_tab2.setTextColor(ic) end
-  if txt_tab3 then txt_tab3.setTextColor(ic) end
-  if txt_tab4 then txt_tab4.setTextColor(ic) end
+local TAB_LINE_WIDTH = 85 * dens
+
+local function moveTabIndicator(tab)
+
+  if not tab_indicator or not tab then
+    return
+  end
+
+  local tabWidth = tab.getWidth()
+  local tabX = tab.getLeft()
+
+  if tabWidth <= 0 then
+    return
+  end
+
+  local indicatorX =
+    tabX + ((tabWidth - TAB_LINE_WIDTH) / 2)
+
+  tab_indicator.setTranslationX(indicatorX)  
 end
 
-function switchTab1() rTabs(); if page_1 then page_1.setVisibility(0) end; if txt_tab1 then txt_tab1.setTextColor(ac) end; if tab_indicator then tab_indicator.setTranslationX(0) end end
-function switchTab2() rTabs(); if page_2 then page_2.setVisibility(0) end; if txt_tab2 then txt_tab2.setTextColor(ac) end; if tab_indicator then tab_indicator.setTranslationX(85*dens) end end
-function switchTab3() rTabs(); if page_3 then page_3.setVisibility(0) end; if txt_tab3 then txt_tab3.setTextColor(ac) end; if tab_indicator  then tab_indicator.setTranslationX(170*dens) end end
-function switchTab4() rTabs(); if page_4 then page_4.setVisibility(0) end; if txt_tab4 then txt_tab4.setTextColor(ac) end; if tab_indicator then tab_indicator.setTranslationX(255*dens) end end
+local function rTabs()
+  if page_1 then
+    page_1.setVisibility(8)
+  end
 
+  if page_2 then
+    page_2.setVisibility(8)
+  end
+
+  if page_3 then
+    page_3.setVisibility(8)
+  end
+
+  if page_4 then
+    page_4.setVisibility(8)
+  end
+
+  if txt_tab1 then
+    txt_tab1.setTextColor(ic)
+  end
+
+  if txt_tab2 then
+    txt_tab2.setTextColor(ic)
+  end
+
+  if txt_tab3 then
+    txt_tab3.setTextColor(ic)
+  end
+
+  if txt_tab4 then
+    txt_tab4.setTextColor(ic)
+  end
+end
+
+
+-- =========================================================
+-- MAIN
+-- =========================================================
+function switchTab1()
+  rTabs()
+
+  if page_1 then
+    page_1.setVisibility(0)
+  end
+
+  if txt_tab1 then
+    txt_tab1.setTextColor(ac)
+  end
+
+  moveTabIndicator(tab1)
+end
+
+
+function switchTab2()
+  rTabs()
+
+  if page_2 then
+    page_2.setVisibility(0)
+  end
+
+  if txt_tab2 then
+    txt_tab2.setTextColor(ac)
+  end
+
+  moveTabIndicator(tab2)
+end
+
+
+function switchTab3()
+  rTabs()
+
+  if page_3 then
+    page_3.setVisibility(0)
+  end
+
+  if txt_tab3 then
+    txt_tab3.setTextColor(ac)
+  end
+
+  moveTabIndicator(tab3)
+end
+
+function switchTab4()
+  rTabs()
+
+  if page_4 then
+    page_4.setVisibility(0)
+  end
+
+  if txt_tab4 then
+    txt_tab4.setTextColor(ac)
+  end
+
+  moveTabIndicator(tab4)
+end
+
+--=========
+task(100, function()
+
+  if tab1 and tab_indicator then
+
+    tab1.post(function()
+      moveTabIndicator(tab1)
+    end)
+
+  end
+
+end)
 
 function antihook()
   function getProcessIdsByPattern(pattern)
@@ -497,7 +616,955 @@ function antiC4droid()
 end
 
 
--- Auto Bypass Function
+-- SAVE CONFIG FUNCTION 
+-- =========================================================
+-- KAZE CONFIG
+-- =========================================================
+local configFilePath = activity.getLuaDir() .. "/Kaze_config.txt"
+local configSwitches = {
+
+  -- =========================================================
+  -- LOBBY & SYSTEM
+  -- =========================================================
+  "tut",
+  "clogs",
+  "reset_guest",
+
+  -- =========================================================
+  -- VISUALS / ESP
+  -- =========================================================
+  "wall",
+  "redhack",
+  "br",
+
+  -- =========================================================
+  -- WEAPON MODS
+  -- =========================================================
+  "norecoil",
+  "nos",
+  "noreload",
+  "amo",
+  "nocrouch",
+
+  -- =========================================================
+  -- BRUTAL / RISK
+  -- =========================================================
+  "speed",
+  "superfastdive",
+  "hit",
+
+  -- =========================================================
+  -- MOVEMENT
+  -- =========================================================
+  "walk",
+  "nop",
+  "pump",
+  "fastsw",
+  "fscope",
+  "norlsg",
+
+  -- =========================================================
+  -- MYTHIC GUNS
+  -- =========================================================
+  "skin23",
+  "skin21",
+  "skin8",
+  "skin19",
+  "skin48",
+  "skin29",
+  "skin24",
+  "skin10",
+  "skin22",
+  "skin26",
+  "skin28",
+  "skin17",
+  "skin18",
+  "skin9",
+  "ak117",
+  "qq9",
+  "em",
+
+  -- =========================================================
+  -- LEGENDARY GUNS
+  -- =========================================================
+  "g1",
+  "g2",
+  "g3",
+  "skin32",
+  "g4",
+  "skin71",
+  "skin69",
+  "skin63",
+  "F180",
+  "Targonite",
+  "Peacock",
+  "Yellowjacket",
+  "Judgement",
+  "Rictus",
+  "argus",
+  "F286",
+
+  -- =========================================================
+  -- CHARACTERS
+  -- =========================================================
+  "skin52",
+  "siren",
+  "skin70",
+  "templar",
+  "spectre",
+  "sophia",
+  "lazarus",
+  "shepherd",
+  "ghost",
+  
+  -- =========================================================
+  -- MELEE
+  -- =========================================================
+  "skin34",
+  "scissors",
+  "tomahawk",
+  "saber",
+  "fiery",
+  "spine",
+  "blueprint",
+
+  -- =========================================================
+  -- BR SKIN
+  -- =========================================================
+  "farflight",
+
+    -- =========================================================
+  -- AUDIO
+  -- =========================================================
+  "audio",
+  "audio2",
+  "audio3",
+  "audio4",
+  "audio5",
+  "audio6",
+  "audio7",
+  "audio8",
+  "audio9",
+}
+
+-- =========================================================
+-- CONFIG SEEKBARS
+-- =========================================================
+local configSeekbars = {
+
+  "aimbot_seekbar",
+  "diveb_seekbar",
+  "ipad_seekbar",
+  "snowboard_seekbar"
+
+}
+
+
+-- =========================================================
+-- HELPERS
+-- =========================================================
+local function trim(s)
+
+  return tostring(s):match("^%s*(.-)%s*$")
+
+end
+
+
+local function serializeValue(value)
+
+  if type(value) == "boolean" then
+
+    if value then
+      return "true"
+    else
+      return "false"
+    end
+  end
+
+  return tostring(value)
+end
+
+
+local function parseValue(value)
+
+  value = trim(value)
+
+  if value == "true" then
+    return true
+
+  elseif value == "false" then
+    return false
+  end
+
+  local number = tonumber(value)
+
+  if number ~= nil then
+    return number
+  end
+  return value
+end
+
+
+-- =========================================================
+-- GET CHECKBOX STATE
+-- =========================================================
+local function getCheckboxState(view)
+
+  if view == nil then
+    return nil
+  end
+
+
+  local ok, result = pcall(function()
+    return view.isChecked()
+  end)
+
+
+  if ok and type(result) == "boolean" then
+    return result
+  end
+
+
+  local ok2, result2 = pcall(function()
+    return view.checked
+  end)
+
+
+  if ok2 and type(result2) == "boolean" then
+
+    return result2
+  end
+  return nil
+end
+
+
+-- =========================================================
+-- APPLY AIMBOT SEEK BAR
+-- =========================================================
+local function applyAimbotSeekbar(progress)
+
+  local isVIP = (_G.IsPremiumUser == true)
+
+  local finalValue =
+    (not isVIP and progress > 100)
+    and 100
+    or progress
+
+  local aimStrength = finalValue * 1.0
+  local hexValue = floatToHexLE(aimStrength)
+
+
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x5161770,
+    "h40 00 00 1C"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x5161770 + 4,
+    "hC0 03 5F D6"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x5161770 + 8,
+    hexValue,
+    4
+  )
+
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x666FB88,
+    "h40 00 00 1C"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x666FB88 + 4,
+    "hC0 03 5F D6"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x666FB88 + 8,
+    hexValue,
+    4
+  )
+end
+
+
+-- =========================================================
+-- APPLY SNOWBOARD SEEK BAR
+-- =========================================================
+local function applySnowboardSeekbar(progress)
+
+  local snowboardBoost = progress * 1.0
+  local hexValue = floatToHexLE(snowboardBoost)
+
+
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x52286DC,
+    "h40 00 00 1C C0 03 5F D6"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x52286DC + 4,
+    "hC0 03 5F D6 00 00 7A 44"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x52286DC + 8,
+    hexValue,
+    4
+  )
+
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x522860C,
+    "h40 00 00 1C C0 03 5F D6"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x522860C + 4,
+    "hC0 03 5F D6 00 00 7A 44"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x522860C + 8,
+    hexValue,
+    4
+  )
+end
+
+
+-- =========================================================
+-- APPLY DIVEB SEEK BAR
+-- =========================================================
+local function applyDivebSeekbar(progress)
+
+  local hex = floatToHexLE(progress * 1.0)
+
+
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x5DE9880,
+    "40 00 00 1C C0 03 5F D6"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x5DE981C + 4,
+    "C0 03 5F D6 00 00 7A 44"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x5DE9880 + 8,
+    hex,
+    4
+  )
+
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x5DE981C,
+    "40 00 00 1C C0 03 5F D6"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x5DE981C + 4,
+    "C0 03 5F D6 00 00 7A 44"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x5DE981C + 8,
+    hex,
+    4
+  )
+
+  HexPatches.MemoryPatchBatch({
+      
+    {
+      "libunity.so",
+      0x9BC6E24 + 8,
+      hex
+    },
+
+    {
+      "libunity.so",
+      0x9BC6E24,
+      "40 00 00 1C"
+    }
+
+  })
+end
+
+
+-- =========================================================
+-- APPLY IPAD SEEK BAR
+-- =========================================================
+local function applyIpadSeekbar(progress)
+
+  local cameraVal =
+    (progress <= 0)
+    and 1.0
+    or progress * 1.0
+
+  local hexValue = floatToHexLE(cameraVal)
+
+
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x6643848,
+    "h40 00 00 1C"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x6643848 + 4,
+    "hC0 03 5F D6"
+  )
+  HexPatches.MemoryPatch(
+    "libunity.so",
+    0x6643848 + 8,
+    hexValue,
+    4
+  )
+end
+
+
+-- =========================================================
+-- SEEKBAR LISTENERS
+-- =========================================================
+
+
+-- =========================================================
+-- AIMBOT
+-- =========================================================
+aimbot_seekbar.setOnSeekBarChangeListener{
+
+  onProgressChanged = function(
+    view,
+    progress,
+    fromUser
+  )
+
+    local isVIP =
+      (_G.IsPremiumUser == true)
+
+
+    if not isVIP and progress > 100 then
+
+      view.setProgress(100)
+
+      aimbot_text.setText(
+        "Adjustable Aim (50% - FREE LIMIT)"
+      )
+
+    else
+
+      aimbot_text.setText(
+        "Adjustable Aim (" ..
+        progress ..
+        "%)"
+      )
+
+    end
+  end,
+
+
+  onStopTrackingTouch = function(view)
+
+    local progress =
+      view.getProgress()
+
+    applyAimbotSeekbar(progress)
+
+    idkcstmToast(
+      "Aimbot Strength: " ..
+      progress ..
+      "%"
+    )
+  end
+}
+
+
+-- =========================================================
+-- SNOWBOARD
+-- =========================================================
+snowboard_seekbar.setOnSeekBarChangeListener{
+  onProgressChanged = function(
+    view,
+    progress,
+    fromUser
+  )
+
+    snowboard_text.setText(
+      " " ..
+      progress ..
+      "%"
+    )
+  end,
+
+
+  onStopTrackingTouch = function(view)
+    
+    local progress =
+      view.getProgress()
+
+    applySnowboardSeekbar(progress)
+  end
+}
+
+
+-- =========================================================
+-- DIVEB
+-- =========================================================
+diveb_seekbar.setOnSeekBarChangeListener({
+
+  onProgressChanged = function(
+    v,
+    p,
+    fromUser
+  )
+
+    diveb_text.setText(
+      p ..
+      "%"
+    )
+
+  end,
+
+  onStartTrackingTouch = function(v)
+  end,
+
+
+  onStopTrackingTouch = function(v)
+
+    local progress =
+      v.getProgress()
+
+
+    applyDivebSeekbar(progress)
+
+  end
+})
+
+
+-- =========================================================
+-- IPAD VIEW
+-- =========================================================
+ipad_seekbar.setOnSeekBarChangeListener{
+
+  onProgressChanged = function(
+    view,
+    progress,
+    fromUser
+  )
+
+    ipad_text.setText(
+      " " ..
+      progress ..
+      "%"
+    )
+  end,
+
+  onStopTrackingTouch = function(view)
+
+    local progress =
+      view.getProgress()
+
+    applyIpadSeekbar(progress)
+
+
+    idkcstmToast(
+      "🚀 IPADVIEW: " ..
+      progress ..
+      "% APPLIED"
+    )
+
+  end
+}
+
+-- =========================================================
+-- CONFIG BUTTON CLICK ANIMATION
+-- =========================================================
+local function animateConfigButton(view)
+
+  if view == nil then
+    return
+  end
+
+  local down = ScaleAnimation(
+    1.0,
+    0.94,
+    1.0,
+    0.94,
+    Animation.RELATIVE_TO_SELF,
+    0.5,
+    Animation.RELATIVE_TO_SELF,
+    0.5
+  )
+
+  down.setDuration(90)
+  down.setFillAfter(true)
+
+
+  local up = ScaleAnimation(
+    0.94,
+    1.0,
+    0.94,
+    1.0,
+    Animation.RELATIVE_TO_SELF,
+    0.5,
+    Animation.RELATIVE_TO_SELF,
+    0.5
+  )
+
+  up.setDuration(120)
+  up.setStartOffset(90)
+
+
+  local animation = AnimationSet(true)
+
+  animation.addAnimation(down)
+  animation.addAnimation(up)
+
+  animation.setFillAfter(false)
+
+  view.startAnimation(animation)
+
+end
+
+-- =========================================================
+-- CONFIG BUTTON EVENTS
+-- =========================================================
+function saveconfig.onClick()
+
+  animateConfigButton(saveconfig)
+
+  saveConfig()
+end
+
+function loadconfig.onClick()
+  animateConfigButton(loadconfig)
+  loadConfig()
+end
+
+
+function resetconfig.onClick()
+  animateConfigButton(resetconfig)
+  resetConfig()
+end
+-- =========================================================
+-- SAVE CONFIG
+-- =========================================================
+function saveConfig()
+
+  local file, err =
+    io.open(
+      configFilePath,
+      "w"
+    )
+
+
+  if not file then
+
+    showCustomToast(
+      "SAVE CONFIG FAILED!",
+      0xFF141A24,
+      0xFFFF5252
+    )
+    return false
+  end
+
+  -- =======================================================
+  -- SAVE CHECKBOXES
+  -- =======================================================
+  for _, id in ipairs(
+    configSwitches
+  ) do
+
+    local view =
+      rawget(_G, id)
+
+
+    if view ~= nil then
+
+      local state =
+        getCheckboxState(view)
+
+      if state ~= nil then
+
+        file:write(
+          id,
+          "=",
+          serializeValue(state),
+          "\n"
+        )
+      end
+    end
+  end
+
+
+  -- =======================================================
+  -- SAVE SEEKBARS
+  -- =======================================================
+  for _, id in ipairs(
+    configSeekbars
+  ) do
+
+    local view =
+      rawget(_G, id)
+
+
+    if view ~= nil then
+
+      local ok, progress =
+        pcall(function()
+
+          return view.getProgress()
+        end)
+
+      if ok and progress ~= nil then
+
+        progress =
+          tonumber(progress) or 0
+
+        file:write(
+          id,
+          "=",
+          tostring(progress),
+          "\n"
+        )
+      end
+    end
+  end
+
+  file:flush()
+  file:close()
+
+  -- =======================================================
+  -- SUCCESS
+  -- =======================================================
+  showCustomToast(
+    "SAVE CONFIG SUCCESSFULLY!",
+    0xFF141A24,
+    0xFFFF5252
+  )
+
+  return true
+end
+
+
+-- =========================================================
+-- LOAD CONFIG
+-- =========================================================
+function loadConfig()
+
+  local file, err =
+    io.open(
+      configFilePath,
+      "r"
+    )
+
+
+  if not file then
+    showCustomToast(
+      "CONFIG FILE NOT FOUND!",
+      0xFF141A24,
+      0xFFFF5252
+    )
+    return false
+  end
+
+  local config = {}
+
+  -- =======================================================
+  -- READ CONFIG FILE
+  -- =======================================================
+  for line in file:lines() do
+
+    local key, value =
+      line:match(
+        "^%s*([^=]+)%s*=%s*(.-)%s*$"
+      )
+
+    if key and value then
+
+      key = trim(key)
+      value = trim(value)
+
+      config[key] =
+        parseValue(value)
+    end
+  end
+
+  file:close()
+  
+  -- =======================================================
+  -- LOAD CHECKBOXES
+  -- =======================================================
+  for _, id in ipairs(
+    configSwitches
+  ) do
+
+    local view =
+      rawget(_G, id)
+
+    local value =
+      config[id]
+
+
+    if view ~= nil
+      and value ~= nil
+      and type(value) == "boolean" then
+
+      pcall(function()
+        view.setChecked(value)
+
+      end)
+    end
+  end
+
+  -- =======================================================
+  -- LOAD SEEKBARS
+  -- IMPORTANT:
+  -- setProgress() + APPLY FUNCTION
+  -- =======================================================
+  for _, id in ipairs(
+    configSeekbars
+  ) do
+
+    local view =
+      rawget(_G, id)
+
+    local value =
+      config[id]
+
+    if view ~= nil
+      and value ~= nil
+      and type(value) == "number" then
+
+      local progress =
+        math.floor(value)
+
+      pcall(function()
+        -- Update SeekBar position
+        view.setProgress(
+          progress
+        )
+
+        -- Apply actual function immediately
+        if id == "aimbot_seekbar" then
+
+          applyAimbotSeekbar(
+            progress
+          )
+
+        elseif id == "snowboard_seekbar" then
+
+          applySnowboardSeekbar(
+            progress
+          )
+        elseif id == "diveb_seekbar" then
+
+          applyDivebSeekbar(
+            progress
+          )
+        elseif id == "ipad_seekbar" then
+
+          applyIpadSeekbar(
+            progress
+          )
+        end
+      end)
+    end
+  end
+
+  -- =======================================================
+  -- SUCCESS
+  -- =======================================================
+  showCustomToast(
+    "LOAD CONFIG SUCCESSFULLY!",
+    0xFF141A24,
+    0xFFFF5252
+  )
+  return true
+end
+
+
+-- =========================================================
+-- RESET CONFIG
+-- =========================================================
+function resetConfig()
+  
+  -- =======================================================
+  -- RESET CHECKBOXES
+  -- =======================================================
+  for _, id in ipairs(
+    configSwitches
+  ) do
+
+    local view =
+      rawget(_G, id)
+
+    if view ~= nil then
+      pcall(function()
+
+        view.setChecked(false)
+      end)
+    end
+  end
+
+
+  -- =======================================================
+  -- RESET SEEKBARS
+  -- =======================================================
+  for _, id in ipairs(
+    configSeekbars
+  ) do
+
+    local view =
+      rawget(_G, id)
+
+    if view ~= nil then
+
+      pcall(function()
+
+        view.setProgress(0)
+      end)
+    end
+  end
+
+
+  -- =======================================================
+  -- APPLY RESET VALUES
+  -- =======================================================
+  pcall(function()
+
+    applyAimbotSeekbar(0)
+  end)
+
+  pcall(function()
+    applySnowboardSeekbar(0)
+  end)
+
+
+  pcall(function()
+    applyDivebSeekbar(0)
+  end)
+
+  pcall(function()
+    applyIpadSeekbar(0)
+  end)
+
+  -- =======================================================
+  -- SUCCESS
+  -- =======================================================
+  showCustomToast(
+    "RESET CONFIG SUCCESSFULLY!",
+    0xFF141A24,
+    0xFFFF5252
+  )
+
+  return true
+end
+        
 
 tut.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0xFF00FFEE, PorterDuff.Mode.SRC_ATOP))
 function tut.OnCheckedChangeListener()
@@ -761,111 +1828,6 @@ function norlsg.OnCheckedChangeListener()
     idkcstmToast("NO RELOAD SG","0xFF00FF00","0xFF0000FF","15","18")
   end
 end
-
---adjustable aimbot
-aimbot_seekbar.setOnSeekBarChangeListener{
-  onProgressChanged = function(view, progress, fromUser)
-    local isVIP = (_G.IsPremiumUser == true)
-
-    -- Kung Free user, i-cap sa 50%
-    if not isVIP and progress > 100 then
-      view.setProgress(100)
-      aimbot_text.setText("Adjustable Aim (50% - FREE LIMIT)")
-     else
-      aimbot_text.setText("Adjustable Aim (" .. progress .. "%)")
-    end
-  end,
-
-
-  onStopTrackingTouch = function(view)
-    local progress = view.getProgress()
-    local isVIP = (_G.IsPremiumUser == true)
-
-    -- Siguraduhing final value ay hindi lalampas sa 50 kung hindi VIP
-    local finalValue = (not isVIP and progress > 100) and 100 or progress
-    local aimStrength = finalValue * 1.0
-    local hexValue = floatToHexLE(aimStrength)
-
-    HexPatches.MemoryPatch("libunity.so", 0x5161770, "h40 00 00 1C")
-    HexPatches.MemoryPatch("libunity.so", 0x5161770 + 4, "hC0 03 5F D6")
-    HexPatches.MemoryPatch("libunity.so", 0x5161770 + 8, hexValue, 4)
-
-    HexPatches.MemoryPatch("libunity.so", 0x666FB88, "h40 00 00 1C")
-    HexPatches.MemoryPatch("libunity.so", 0x666FB88 + 4, "hC0 03 5F D6")
-    HexPatches.MemoryPatch("libunity.so", 0x666FB88 + 8, hexValue, 4)
-
-    idkcstmToast("Aimbot Strength: " .. finalValue .. "%")
-  end
-}
-
-snowboard_seekbar.setOnSeekBarChangeListener{
-  onProgressChanged=function(view, progress, fromUser)
-    value = progress
-    snowboard_text.setText(" " .. value .. "%")
-  end,
-  onStopTrackingTouch=function(view)
-    local snowboardBoost = value * 1.0
-    local hexValue = floatToHexLE(snowboardBoost)
-    -- UPDATED: 0x90de3a0 → 0X5B3626C, 0x90de448 → 0X5B36314
-    HexPatches.MemoryPatch("libunity.so", 0x52286DC, "h40 00 00 1C C0 03 5F D6")
-    HexPatches.MemoryPatch("libunity.so", 0x52286DC + 4, "hC0 03 5F D6 00 00 7A 44")
-    HexPatches.MemoryPatch("libunity.so", 0x52286DC + 8, hexValue, 4)
-
-    HexPatches.MemoryPatch("libunity.so", 0x522860C, "h40 00 00 1C C0 03 5F D6")
-    HexPatches.MemoryPatch("libunity.so", 0x522860C + 4, "hC0 03 5F D6 00 00 7A 44")
-    HexPatches.MemoryPatch("libunity.so", 0x522860C + 8, hexValue, 4)
-  end
-}
-
-diveb_seekbar.setOnSeekBarChangeListener({
-  onProgressChanged = function(v, p, fromUser)
-    diveb_text.setText(p .. "%")
-  end,
-  onStartTrackingTouch = function(v)
-    -- optional
-  end,
-  onStopTrackingTouch = function(v)
-    local hex = floatToHexLE(v.getProgress() * 1.0)
-
-    HexPatches.MemoryPatch("libunity.so", 0x5DE9880, "40 00 00 1C C0 03 5F D6")
-    HexPatches.MemoryPatch("libunity.so", 0x5DE981C + 4, "C0 03 5F D6 00 00 7A 44")
-    HexPatches.MemoryPatch("libunity.so", 0x5DE9880 + 8, hex, 4)
-
-    HexPatches.MemoryPatch("libunity.so", 0x5DE981C, "40 00 00 1C C0 03 5F D6")
-    HexPatches.MemoryPatch("libunity.so", 0x5DE981C + 4, "C0 03 5F D6 00 00 7A 44")
-    HexPatches.MemoryPatch("libunity.so", 0x5DE981C + 8, hex, 4)
-
-    HexPatches.MemoryPatchBatch({
-      {"libunity.so", 0x9BC6E24+8, hex},
-      {"libunity.so", 0x9BC6E24, "40 00 00 1C"}
-    })
-  end
-})
-
--- [ IPAD VIEW ADJUSTER (0-150) ]
-ipad_seekbar.setOnSeekBarChangeListener{
-  onProgressChanged=function(view, progress, fromUser)
-    ipad_text.setText(" " .. progress .. "%")
-  end,
-
-  onStopTrackingTouch=function(view)
-    local progress = view.getProgress()
-    -- adjustable value, iwas 0 para hindi mag-stock ang camera configuration
-    local cameraVal = (progress <= 0) and 1.0 or progress * 1.0
-    local hexValue = floatToHexLE(cameraVal)
-
-    -- Tatlong magkakasunod na linya ng patch para sa GetCurrentWorldCameraFOV
-    HexPatches.MemoryPatch("libunity.so", 0x6643848, "h40 00 00 1C")
-    HexPatches.MemoryPatch("libunity.so", 0x6643848 + 4, "hC0 03 5F D6")
-    HexPatches.MemoryPatch("libunity.so", 0x6643848 + 8, hexValue, 4)
-
-    idkcstmToast("🚀 IPADVIEW: " .. progress .. "% APPLIED")
-  end
-}
-
-
-
-
 
 
 blueprint.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0xFF00FFEE, PorterDuff.Mode.SRC_ATOP))
